@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Manages the creation of new packets (and their underlying buffers) as needed
  * @author Michael Ripley (<a href="mailto:michael-ripley@utulsa.edu">michael-ripley@utulsa.edu</a>) Jun 5, 2015
  */
-class PacketManager
+public class PacketManager
 {
 	final private int bufferSize;
 	ConcurrentLinkedQueue<DatagramPacket> queue;
@@ -17,7 +17,7 @@ class PacketManager
 	 * Construct a new PacketManager
 	 * @param bufferSize the size (in bytes) of the bufers
 	 */
-	PacketManager(int bufferSize)
+	public PacketManager(int bufferSize)
 	{
 		this.bufferSize = bufferSize;
 		queue = new ConcurrentLinkedQueue<>();
@@ -27,7 +27,7 @@ class PacketManager
 	 * Get a datagram packet
 	 * @return a packet you may use, and should return later with {@link #free()}
 	 */
-	DatagramPacket get()
+	public DatagramPacket get()
 	{
 		DatagramPacket packet;
 		if ((packet = queue.poll()) == null)
@@ -41,7 +41,7 @@ class PacketManager
 	 * Return a packet to the queue for reuse
 	 * @param packet the packet to free
 	 */
-	void free(DatagramPacket packet)
+	public void free(DatagramPacket packet)
 	{
 		queue.add(packet);
 	}

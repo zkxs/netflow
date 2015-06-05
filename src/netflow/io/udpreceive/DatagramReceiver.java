@@ -16,16 +16,15 @@ import java.net.UnknownHostException;
  */
 public class DatagramReceiver
 {	
-	final static int BUFFER_SIZE = 1464;
 	
 	
 	private DatagramSocket socket;
-	private PacketManager bufferManager;
+	private PacketManager packetManager;
 	
-	public DatagramReceiver(final int portNumber) throws SocketException
+	public DatagramReceiver(final int portNumber, PacketManager packetManager) throws SocketException
 	{
 		socket = new DatagramSocket(portNumber);
-		bufferManager = new PacketManager(BUFFER_SIZE);
+		this.packetManager = packetManager;
 		
 		(new DatagramThread("name name")).start();
 		(new Thread("derp") {
@@ -61,7 +60,7 @@ public class DatagramReceiver
 		@Override
 		public void run()
 		{
-			DatagramPacket packet = bufferManager.get();
+			DatagramPacket packet = packetManager.get();
 			try
 			{
 				System.out.printf("Listening on port %d\n", socket.getLocalPort());
