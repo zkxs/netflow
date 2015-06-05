@@ -7,7 +7,7 @@ import netflow.io.udpreceive.PacketManager;
 
 public class NetflowCollector
 {	
-	final static int BUFFER_SIZE = 1464;
+	final static int BUFFER_SIZE = 1 << 12; // 2^12 = 4096
 	
 	public static void main(String[] args)
 	{
