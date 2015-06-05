@@ -1,9 +1,10 @@
-package io.udpreceive;
+package netflow.io.udpreceive;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
@@ -75,8 +76,9 @@ public class DatagramReceiver
 						System.out.printf("Got a test packet\n");
 					}
 					else
-					{
-						System.out.printf("Got a REAL packet from %s\n", socket.getRemoteSocketAddress().toString());
+					{							
+						System.out.printf("Got a REAL packet from %s [%d]\n", packet.getAddress().toString(), packet.getLength());
+						System.out.printf("%s\n", netflow.Util.bytesToHex(buf, packet.getLength()));
 					}
 				}
 			}

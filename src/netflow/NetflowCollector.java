@@ -1,6 +1,7 @@
+package netflow;
 import java.net.SocketException;
 
-import io.udpreceive.DatagramReceiver;
+import netflow.io.udpreceive.DatagramReceiver;
 
 
 public class NetflowCollector

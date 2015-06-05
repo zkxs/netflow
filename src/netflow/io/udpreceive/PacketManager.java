@@ -1,4 +1,4 @@
-package io.udpreceive;
+package netflow.io.udpreceive;
 
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
