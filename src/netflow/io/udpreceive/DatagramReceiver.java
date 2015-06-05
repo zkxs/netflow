@@ -31,23 +31,6 @@ public class DatagramReceiver
 		this.outputQueue = outputQueue;
 		
 		(new DatagramThread("DatagramThread(" + portNumber + ")")).start();
-		(new Thread("derp") {
-			public void run() {
-				try {
-					DatagramSocket s = new DatagramSocket();
-					byte[] buf = {99};
-					DatagramPacket p = new DatagramPacket(buf, buf.length, InetAddress.getLocalHost(), portNumber);
-					while (true) {
-						s.send(p);
-						Thread.sleep(60000);
-					}
-				}
-				catch (InterruptedException | IOException e) {
-					e.printStackTrace();
-				}
-				
-			}
-		}).start();
 	}
 	
 	
@@ -71,18 +54,13 @@ public class DatagramReceiver
 				while (true)
 				{
 					socket.receive(packet);
-					//TODO: handle packet
 					
 					byte[] buf = packet.getData();
-					if (buf[0] == 99)
-					{
-						System.out.printf("Got a test packet\n");
-					}
-					else
-					{							
-						System.out.printf("Got a REAL packet from %s [%d]\n", packet.getAddress().toString(), packet.getLength());
-						System.out.printf("%s\n", netflow.Util.bytesToHex(buf, packet.getLength()));
-					}
+					
+					System.out.printf("Got a packet from %s [%d]\n", packet.getAddress().toString(), packet.getLength());
+					System.out.printf("%s\n", netflow.Util.bytesToHex(buf, packet.getLength()));
+					
+					//TODO: handle packet
 				}
 			}
 			catch (IOException e)
