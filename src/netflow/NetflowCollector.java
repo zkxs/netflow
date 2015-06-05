@@ -1,5 +1,7 @@
 package netflow;
+import java.net.DatagramPacket;
 import java.net.SocketException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import netflow.io.udpreceive.DatagramReceiver;
 import netflow.io.udpreceive.PacketManager;
@@ -18,15 +20,16 @@ public class NetflowCollector
 	// begin fields
 	
 	private PacketManager packetManager;
-	
+	private ConcurrentLinkedQueue<DatagramPacket> toProcessQueue;
+	private ConcurrentLinkedQueue<NetflowEntry> toStoreQueue;
 	
 	// begin constructors
 	
 	public NetflowCollector()
 	{
 		packetManager = new PacketManager(BUFFER_SIZE);
-		
-		
+		toProcessQueue = new ConcurrentLinkedQueue<>();
+		toStoreQueue = new ConcurrentLinkedQueue<>();
 	}
 	
 	
@@ -36,7 +39,7 @@ public class NetflowCollector
 	{
 		try
 		{
-			DatagramReceiver server = new DatagramReceiver(port, packetManager);
+			DatagramReceiver server = new DatagramReceiver(port, packetManager, toProcessQueue);
 		}
 		catch (SocketException e)
 		{

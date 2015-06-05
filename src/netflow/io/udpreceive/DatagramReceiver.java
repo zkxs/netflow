@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 
@@ -20,13 +21,16 @@ public class DatagramReceiver
 	
 	private DatagramSocket socket;
 	private PacketManager packetManager;
+	private ConcurrentLinkedQueue<DatagramPacket> outputQueue;
 	
-	public DatagramReceiver(final int portNumber, PacketManager packetManager) throws SocketException
+	public DatagramReceiver(final int portNumber, PacketManager packetManager,
+			ConcurrentLinkedQueue<DatagramPacket> outputQueue) throws SocketException
 	{
 		socket = new DatagramSocket(portNumber);
 		this.packetManager = packetManager;
+		this.outputQueue = outputQueue;
 		
-		(new DatagramThread("name name")).start();
+		(new DatagramThread("DatagramThread(" + portNumber + ")")).start();
 		(new Thread("derp") {
 			public void run() {
 				try {
