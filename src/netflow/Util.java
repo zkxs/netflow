@@ -37,12 +37,24 @@ public final class Util
 		return new String(hexChars);
 	}
 	
+	/**
+	 * Read an unsigned short from a byte array
+	 * @param buf The byte 
+	 * @param offset
+	 * @return
+	 */
 	final public static int bytesToUnsignedShort(byte[] buf, int offset)
 	{	
 		return ((buf[offset] << 8) & 0xFF00)
 				+ (buf[offset + 1] & 0xFF);
 	}
 	
+	/**
+	 * Read an unsigned int from a byte array
+	 * @param buf
+	 * @param offset
+	 * @return
+	 */
 	final public static long bytesToUnsignedInt(byte[] buf, int offset)
 	{	
 		return (((long)buf[offset] << 24) & 0xFF000000L)
