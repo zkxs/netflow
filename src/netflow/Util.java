@@ -18,6 +18,7 @@ public final class Util
 	{
 		e.printStackTrace();
 		//TODO: release resources? perhaps via shutdown hooks?
+		System.err.println("Terminating program due to unrecoverable error.");
 		System.exit(1);
 	}
 	

@@ -37,13 +37,26 @@ public class NetflowCollector
 	
 	public void listen(int port)
 	{
+		DatagramReceiver server = null;
+		
 		try
 		{
-			DatagramReceiver server = new DatagramReceiver(port, packetManager, toProcessQueue);
+			server = new DatagramReceiver(port, packetManager, toProcessQueue);
 		}
 		catch (SocketException e)
 		{
 			Util.die(e); //TODO: print error message?
 		}
+		
+		try
+		{
+			Thread.sleep(1000);
+		}
+		catch (InterruptedException e)
+		{
+			Util.die(e);
+		}
+		
+		server.stop();
 	}
 }

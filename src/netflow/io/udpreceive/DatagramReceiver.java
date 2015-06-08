@@ -9,13 +9,16 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import netflow.Stoppable;
+import netflow.Util;
+
 
 
 /**
  * Listens for incoming datagrams
  * @author Michael Ripley (<a href="mailto:michael-ripley@utulsa.edu">michael-ripley@utulsa.edu</a>) Jun 5, 2015
  */
-public class DatagramReceiver
+public class DatagramReceiver implements Stoppable
 {	
 	
 	
@@ -24,6 +27,7 @@ public class DatagramReceiver
 	private ConcurrentLinkedQueue<DatagramPacket> outputQueue;
 	
 	private boolean running;
+	private ReceiverThread thread;
 	
 	public DatagramReceiver(final int portNumber, PacketManager packetManager,
 			ConcurrentLinkedQueue<DatagramPacket> outputQueue) throws SocketException
@@ -34,22 +38,33 @@ public class DatagramReceiver
 		
 		running = true;
 		
-		(new DatagramThread("DatagramThread(" + portNumber + ")")).start();
+		thread = new ReceiverThread("ReceiverThread(" + portNumber + ")");
+		thread.start();
 	}
 	
 	public void stop()
 	{
 		running = false;
 		socket.close();
+		synchronized(thread)
+		{
+			try
+			{
+				thread.wait();
+			}
+			catch (InterruptedException e)
+			{
+				Util.die(e);
+			}
+		}
 	}
 	
-	private class DatagramThread extends Thread
+	private class ReceiverThread extends Thread
 	{
-
-		public DatagramThread(String name)
+		public ReceiverThread(String name)
 		{
 			super(name);
-			setDaemon(false); //TODO: remove
+			setDaemon(false); //TODO: remove or handle shutdown
 		}
 
 		@Override
@@ -63,17 +78,25 @@ public class DatagramReceiver
 				{
 					socket.receive(packet);
 					
-					byte[] buf = packet.getData();
-					
-					System.out.printf("Got a packet from %s [%d]\n", packet.getAddress().toString(), packet.getLength());
-					System.out.printf("%s\n", netflow.Util.bytesToHex(buf, packet.getLength()));
-					
 					//TODO: handle packet
 				}
 			}
+			catch (SocketException e)
+			{
+				if (running)
+				{
+					Util.die(e);
+				}
+				// TODO: handle sockets closing when they shouldn't
+			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				Util.die(e);
+			}
+			
+			synchronized(thread)
+			{
+				thread.notifyAll();
 			}
 		}
 	}

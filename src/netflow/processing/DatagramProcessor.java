@@ -2,6 +2,8 @@ package netflow.processing;
 
 import java.net.DatagramPacket;
 
+import netflow.NetflowEntry;
+import netflow.Util;
 import netflow.processing.versions.*;
 
 /**
@@ -23,16 +25,81 @@ public class DatagramProcessor
 	}
 	
 	
-	public static void process(DatagramPacket d)
+	public static void process(DatagramPacket packet)
 	{
-		if (d.getLength() >= MIN_PACKET_LENGTH)
+		if (packet.getLength() >= MIN_PACKET_LENGTH)
 		{
-			byte[] buf = d.getData();
+			int version = Util.bytesToUnsignedShort(packet.getData(), 0);
+			
+			System.out.printf("Got a v%d packet from %s [%d]\n", version, packet.getAddress().toString(), packet.getLength());
+			System.out.printf("%s\n", netflow.Util.bytesToHex(packet.getData(), packet.getLength()));
+			
+			if (protocols[version] != null)
+			{
+				NetflowEntry entry = protocols[version].process(packet);
+			}
+			else
+			{
+				//TODO: invalid protocol version
+			}
 		}
-		
+		else
+		{
+			//TODO: packet too short
+		}
 		
 	}
 	
 	
+	private static int id = 0;
+	private boolean running;
+	private ProcessorThread thread;
 	
+	public DatagramProcessor()
+	{
+		running = true;
+		
+		thread = new ProcessorThread("ProcessorThread(" + id++ + ")");
+		thread.start();
+	}
+	
+	public void stop()
+	{
+		running = false;
+		
+		synchronized(thread)
+		{
+			try
+			{
+				thread.wait();
+			}
+			catch (InterruptedException e)
+			{
+				Util.die(e);
+			}
+		}
+	}
+	
+	private class ProcessorThread extends Thread
+	{
+		public ProcessorThread(String name)
+		{
+			super(name);
+			setDaemon(false); //TODO: remove or handle shutdown
+		}
+		
+		@Override
+		public void run()
+		{
+			while (running)
+			{
+			
+			}
+			
+			synchronized(thread)
+			{
+				thread.notifyAll();
+			}
+		}
+	}
 }
