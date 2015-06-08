@@ -31,12 +31,12 @@ public class DatagramProcessor
 	{
 		if (packet.getLength() >= MIN_PACKET_LENGTH)
 		{
-			int version = Util.bytesToUnsignedShort(packet.getData(), 0);
+			int version = Util.bytesToUnsignedShort(packet.getData(), 0) - 1; // start counting at 0
 			
 			System.out.printf("Got a v%d packet from %s [%d]\n", version, packet.getAddress().toString(), packet.getLength());
 			System.out.printf("%s\n", netflow.Util.bytesToHex(packet.getData(), packet.getLength()));
 			
-			if (protocols[version] != null)
+			if (version < MAX_PROTOCOL_VERSION && protocols[version] != null)
 			{
 				NetflowEntry entry = protocols[version].process(packet);
 			}
