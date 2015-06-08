@@ -1,6 +1,7 @@
 package netflow.processing;
 
 import java.net.DatagramPacket;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import netflow.NetflowCollector;
 import netflow.NetflowEntry;
@@ -56,10 +57,16 @@ public class DatagramProcessor
 	private NetflowCollector collector;
 	private boolean running;
 	private ProcessorThread thread;
+	private ConcurrentLinkedQueue<DatagramPacket> inputQueue;
+	private ConcurrentLinkedQueue<NetflowEntry> outputQueue;
+	private Object lock;
 	
 	public DatagramProcessor(NetflowCollector collector)
 	{
 		this.collector = collector;
+		inputQueue = collector.getToProcessQueue();
+		outputQueue = collector.getToStoreQueue();
+		lock = collector.getProcessorLock();
 		
 		running = true;
 		
@@ -97,7 +104,25 @@ public class DatagramProcessor
 		{
 			while (running)
 			{
-			
+				DatagramPacket packet;
+				if ((packet = inputQueue.poll()) != null)
+				{
+					// 
+				}
+				else
+				{
+					synchronized (lock)
+					{
+						try
+						{
+							lock.wait();
+						}
+						catch (InterruptedException e)
+						{
+							Util.die(e);
+						}
+					}
+				}
 			}
 			
 			synchronized(thread)

@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import netflow.io.udpreceive.DatagramReceiver;
 import netflow.io.udpreceive.PacketManager;
+import netflow.processing.DatagramProcessor;
 
 
 public class NetflowCollector
@@ -24,6 +25,9 @@ public class NetflowCollector
 	private ConcurrentLinkedQueue<DatagramPacket> toProcessQueue;
 	private ConcurrentLinkedQueue<NetflowEntry> toStoreQueue;
 	private LinkedList<DatagramReceiver> servers;
+	private LinkedList<DatagramProcessor> processors;
+	private Object serverLock = new Object();
+	private Object processorLock = new Object();
 	
 	// begin constructors
 	
@@ -33,6 +37,7 @@ public class NetflowCollector
 		toProcessQueue = new ConcurrentLinkedQueue<>();
 		toStoreQueue = new ConcurrentLinkedQueue<>();
 		servers = new LinkedList<>();
+		processors = new LinkedList<>();
 	}
 	
 	
@@ -41,6 +46,7 @@ public class NetflowCollector
 	public void listen(int port)
 	{
 		listen(port, true);
+		process();
 	}
 	
 	public void listen(int port, boolean failHard)
@@ -62,6 +68,15 @@ public class NetflowCollector
 			}
 		}
 	}
+	
+	/**
+	 * Add a new processing thread
+	 */
+	public void process()
+	{
+		DatagramProcessor processor = new DatagramProcessor(this);
+		processors.add(processor);
+	}
 
 
 	public PacketManager getPacketManager()
@@ -80,6 +95,14 @@ public class NetflowCollector
 	{
 		return toStoreQueue;
 	}
-	
-	
+
+	public Object getServerLock()
+	{
+		return serverLock;
+	}
+
+	public Object getProcessorLock()
+	{
+		return processorLock;
+	}
 }
