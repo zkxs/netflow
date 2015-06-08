@@ -35,4 +35,18 @@ public final class Util
 		}
 		return new String(hexChars);
 	}
+	
+	final public static int bytesToUnsignedShort(byte[] buf, int offset)
+	{	
+		return ((buf[offset] << 8) & 0xFF00)
+				+ (buf[offset + 1] & 0xFF);
+	}
+	
+	final public static long bytesToUnsignedInt(byte[] buf, int offset)
+	{	
+		return (((long)buf[offset] << 24) & 0xFF000000L)
+				+ ((long)(buf[offset + 1] << 16) & 0xFF0000L)
+				+ ((long)(buf[offset + 2] << 8) & 0xFF00L)
+				+ ((long)buf[offset + 3] & 0xFFL);
+	}
 }
