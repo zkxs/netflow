@@ -9,6 +9,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import netflow.NetflowCollector;
 import netflow.Stoppable;
 import netflow.Util;
 
@@ -21,7 +22,7 @@ import netflow.Util;
 public class DatagramReceiver implements Stoppable
 {	
 	
-	
+	private NetflowCollector collector;
 	private DatagramSocket socket;
 	private PacketManager packetManager;
 	private ConcurrentLinkedQueue<DatagramPacket> outputQueue;
@@ -29,12 +30,12 @@ public class DatagramReceiver implements Stoppable
 	private boolean running;
 	private ReceiverThread thread;
 	
-	public DatagramReceiver(final int portNumber, PacketManager packetManager,
-			ConcurrentLinkedQueue<DatagramPacket> outputQueue) throws SocketException
+	public DatagramReceiver(NetflowCollector collector, final int portNumber) throws SocketException
 	{
+		this.collector = collector;
 		socket = new DatagramSocket(portNumber);
-		this.packetManager = packetManager;
-		this.outputQueue = outputQueue;
+		packetManager = collector.getPacketManager();
+		outputQueue = collector.getToProcessQueue();
 		
 		running = true;
 		

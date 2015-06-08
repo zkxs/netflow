@@ -2,6 +2,7 @@ package netflow.processing;
 
 import java.net.DatagramPacket;
 
+import netflow.NetflowCollector;
 import netflow.NetflowEntry;
 import netflow.Util;
 import netflow.processing.versions.*;
@@ -52,11 +53,14 @@ public class DatagramProcessor
 	
 	
 	private static int id = 0;
+	private NetflowCollector collector;
 	private boolean running;
 	private ProcessorThread thread;
 	
-	public DatagramProcessor()
+	public DatagramProcessor(NetflowCollector collector)
 	{
+		this.collector = collector;
+		
 		running = true;
 		
 		thread = new ProcessorThread("ProcessorThread(" + id++ + ")");

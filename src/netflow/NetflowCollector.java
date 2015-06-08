@@ -1,6 +1,7 @@
 package netflow;
 import java.net.DatagramPacket;
 import java.net.SocketException;
+import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import netflow.io.udpreceive.DatagramReceiver;
@@ -22,6 +23,7 @@ public class NetflowCollector
 	private PacketManager packetManager;
 	private ConcurrentLinkedQueue<DatagramPacket> toProcessQueue;
 	private ConcurrentLinkedQueue<NetflowEntry> toStoreQueue;
+	private LinkedList<DatagramReceiver> servers;
 	
 	// begin constructors
 	
@@ -30,6 +32,7 @@ public class NetflowCollector
 		packetManager = new PacketManager(BUFFER_SIZE);
 		toProcessQueue = new ConcurrentLinkedQueue<>();
 		toStoreQueue = new ConcurrentLinkedQueue<>();
+		servers = new LinkedList<>();
 	}
 	
 	
@@ -37,26 +40,46 @@ public class NetflowCollector
 	
 	public void listen(int port)
 	{
-		DatagramReceiver server = null;
-		
+		listen(port, true);
+	}
+	
+	public void listen(int port, boolean failHard)
+	{
 		try
 		{
-			server = new DatagramReceiver(port, packetManager, toProcessQueue);
+			DatagramReceiver server = new DatagramReceiver(this, port);
+			servers.add(server);
 		}
 		catch (SocketException e)
 		{
-			Util.die(e); //TODO: print error message?
+			if (failHard)
+			{
+				Util.die(e);
+			}
+			else
+			{
+				e.printStackTrace(); //TODO: print error message differently?
+			}
 		}
-		
-		try
-		{
-			Thread.sleep(1000);
-		}
-		catch (InterruptedException e)
-		{
-			Util.die(e);
-		}
-		
-		server.stop();
 	}
+
+
+	public PacketManager getPacketManager()
+	{
+		return packetManager;
+	}
+
+
+	public ConcurrentLinkedQueue<DatagramPacket> getToProcessQueue()
+	{
+		return toProcessQueue;
+	}
+
+
+	public ConcurrentLinkedQueue<NetflowEntry> getToStoreQueue()
+	{
+		return toStoreQueue;
+	}
+	
+	
 }
