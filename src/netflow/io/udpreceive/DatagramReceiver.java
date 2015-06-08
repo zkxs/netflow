@@ -23,6 +23,8 @@ public class DatagramReceiver
 	private PacketManager packetManager;
 	private ConcurrentLinkedQueue<DatagramPacket> outputQueue;
 	
+	private boolean running;
+	
 	public DatagramReceiver(final int portNumber, PacketManager packetManager,
 			ConcurrentLinkedQueue<DatagramPacket> outputQueue) throws SocketException
 	{
@@ -30,10 +32,16 @@ public class DatagramReceiver
 		this.packetManager = packetManager;
 		this.outputQueue = outputQueue;
 		
+		running = true;
+		
 		(new DatagramThread("DatagramThread(" + portNumber + ")")).start();
 	}
 	
-	
+	public void stop()
+	{
+		running = false;
+		socket.close();
+	}
 	
 	private class DatagramThread extends Thread
 	{
@@ -51,7 +59,7 @@ public class DatagramReceiver
 			try
 			{
 				System.out.printf("Listening on port %d\n", socket.getLocalPort());
-				while (true)
+				while (running)
 				{
 					socket.receive(packet);
 					
