@@ -63,8 +63,7 @@ public class DatagramProcessor
 			System.err.println("packet too short");
 		}
 		
-	}
-	
+	}	
 	
 	private static int id = 0;
 	private NetflowCollector collector;
@@ -128,7 +127,7 @@ public class DatagramProcessor
 				DatagramPacket packet;
 				if ((packet = inputQueue.poll()) != null)
 				{
-					// 
+					process(packet);
 				}
 				else
 				{

@@ -89,6 +89,17 @@ public class NetflowCollector
 	}
 	
 	/**
+	 * Signal that a new packet has arrived in the queue and needs processing
+	 */
+	public void signalNewPacket()
+	{
+		synchronized (processorLock)
+		{
+			processorLock.notify();
+		}
+	}
+	
+	/**
 	 * Get this collector's Packet Manager
 	 * @return this collector's Packet Manager
 	 */

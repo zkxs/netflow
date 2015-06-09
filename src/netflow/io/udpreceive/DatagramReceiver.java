@@ -90,6 +90,9 @@ public class DatagramReceiver implements Stoppable
 					
 					// send packet to queue
 					outputQueue.add(packet);
+					
+					// signal that a new packet has been enqueued
+					collector.signalNewPacket();
 				}
 			}
 			catch (SocketException e)
