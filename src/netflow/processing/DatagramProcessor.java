@@ -23,7 +23,7 @@ public class DatagramProcessor
 	{
 		protocols = new ProtocolInterface[MAX_PROTOCOL_VERSION];
 		
-		protocols[5] = new ProtocolV5();
+		protocols[5 - 1] = new ProtocolV5();
 	}
 	
 	/**
@@ -36,8 +36,7 @@ public class DatagramProcessor
 		{
 			int version = Util.bytesToUnsignedShort(packet.getData(), 0) - 1; // start counting at 0
 			
-			System.out.printf("Got a v%d packet from %s [%d]\n", version, packet.getAddress().toString(), packet.getLength());
-			System.out.printf("%s\n", netflow.Util.bytesToHex(packet.getData(), packet.getLength()));
+			System.out.printf("Got a v%d packet from %s [%d]\n    %s\n", version + 1, packet.getAddress().toString(), packet.getLength(), netflow.Util.bytesToHex(packet.getData(), packet.getLength()));
 			
 			if (version < MAX_PROTOCOL_VERSION && protocols[version] != null)
 			{

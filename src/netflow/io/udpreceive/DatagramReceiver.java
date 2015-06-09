@@ -78,12 +78,14 @@ public class DatagramReceiver implements Stoppable
 		@Override
 		public void run()
 		{
-			DatagramPacket packet = packetManager.get();
 			try
 			{
 				System.out.printf("Listening on port %d\n", socket.getLocalPort());
 				while (running)
 				{
+					// get an unused (or new) packet
+					DatagramPacket packet = packetManager.get();
+					
 					// block until packet received
 					socket.receive(packet);
 					// received packet has now been written into the buffer 'packet'
