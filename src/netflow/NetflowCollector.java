@@ -17,6 +17,7 @@ public class NetflowCollector
 	{
 		NetflowCollector collector = new NetflowCollector();
 		collector.listen(9010);
+		collector.process();
 	}
 	
 	// begin fields
@@ -46,7 +47,6 @@ public class NetflowCollector
 	public void listen(int port)
 	{
 		listen(port, true);
-		process();
 	}
 	
 	public void listen(int port, boolean failHard)
