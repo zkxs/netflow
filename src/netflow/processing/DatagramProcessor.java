@@ -129,12 +129,13 @@ public class DatagramProcessor
 				{
 					process(packet);
 				}
-				else
+				else // the queue is empty
 				{
 					synchronized (lock)
 					{
 						try
 						{
+							// wait for the signal that a new packet is in the queue
 							lock.wait();
 						}
 						catch (InterruptedException e)
@@ -145,6 +146,7 @@ public class DatagramProcessor
 				}
 			}
 			
+			// signal threads waiting on us to stop that we have stopped
 			synchronized(thread)
 			{
 				thread.notifyAll();
