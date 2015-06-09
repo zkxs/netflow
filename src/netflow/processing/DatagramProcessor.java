@@ -12,13 +12,13 @@ import netflow.processing.versions.*;
  * Process the raw data of a netflow datagram into a Java data structure
  * @author Michael Ripley (<a href="mailto:michael-ripley@utulsa.edu">michael-ripley@utulsa.edu</a>) Jun 8, 2015
  */
-
 public class DatagramProcessor
 {	
 	private final static int MIN_PACKET_LENGTH = 17; // header in protocol v1 (nothing is smaller)
 	private final static int MAX_PROTOCOL_VERSION = 9;
 	private final static ProtocolInterface[] protocols;
 	
+	// static initialization of the static fields
 	static
 	{
 		protocols = new ProtocolInterface[MAX_PROTOCOL_VERSION];
@@ -26,8 +26,11 @@ public class DatagramProcessor
 		protocols[5] = new ProtocolV5();
 	}
 	
-	
-	public static void process(DatagramPacket packet)
+	/**
+	 * Process a single datagram packet. The results of the processing will be sent to an output queue.
+	 * @param packet The packet to process
+	 */
+	public void process(DatagramPacket packet)
 	{
 		if (packet.getLength() >= MIN_PACKET_LENGTH)
 		{
@@ -39,15 +42,25 @@ public class DatagramProcessor
 			if (version < MAX_PROTOCOL_VERSION && protocols[version] != null)
 			{
 				NetflowEntry entry = protocols[version].process(packet);
+				
+				/* TODO: stick the entry (entries???) in the output queue
+				 * A packet can contain multiple entries. I think I'll store these as a linked list by adding
+				 * a NetflowEntry field within NetflowEntry.
+				 */
+				
+				// free the DatagramPacket for reuse
+				collector.getPacketManager().free(packet);
 			}
 			else
 			{
 				//TODO: invalid protocol version
+				System.err.println("invalid protocol version");
 			}
 		}
 		else
 		{
 			//TODO: packet too short
+			System.err.println("packet too short");
 		}
 		
 	}
@@ -61,6 +74,10 @@ public class DatagramProcessor
 	private ConcurrentLinkedQueue<NetflowEntry> outputQueue;
 	private Object lock;
 	
+	/**
+	 * Construct a new DatagramProcessor
+	 * @param collector The NetflowCollector this DatagramReceiver is a member of
+	 */
 	public DatagramProcessor(NetflowCollector collector)
 	{
 		this.collector = collector;
@@ -91,6 +108,10 @@ public class DatagramProcessor
 		}
 	}
 	
+	/**
+	 * Thread that processes DatagramPackets
+	 * @author Michael Ripley (<a href="mailto:michael-ripley@utulsa.edu">michael-ripley@utulsa.edu</a>) Jun 9, 2015
+	 */
 	private class ProcessorThread extends Thread
 	{
 		public ProcessorThread(String name)
