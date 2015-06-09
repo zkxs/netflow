@@ -24,6 +24,12 @@ public final class Util
 	
 	final private static char[] hexArray = "0123456789ABCDEF".toCharArray();
 	
+	/**
+	 * Convert a byte array to a hexadecimal string representation of its contents
+	 * @param bytes The byte array
+	 * @param length the length of the byte array
+	 * @return a string representation of <code>bytes</code>' contents
+	 */
 	final public static String bytesToHex(byte[] bytes, int length)
 	{
 		length = Math.min(bytes.length, length);
@@ -39,9 +45,9 @@ public final class Util
 	
 	/**
 	 * Read an unsigned short from a byte array
-	 * @param buf The byte 
-	 * @param offset
-	 * @return
+	 * @param buf The byte array
+	 * @param offset The offset in the array to start from
+	 * @return The unsigned short value, stored in an int.
 	 */
 	final public static int bytesToUnsignedShort(byte[] buf, int offset)
 	{	
@@ -51,9 +57,9 @@ public final class Util
 	
 	/**
 	 * Read an unsigned int from a byte array
-	 * @param buf
-	 * @param offset
-	 * @return
+	 * @param buf The byte aray
+	 * @param offset The offset in the array to start from
+	 * @return The unsigned int value, stored in a long.
 	 */
 	final public static long bytesToUnsignedInt(byte[] buf, int offset)
 	{	

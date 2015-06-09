@@ -1,7 +1,6 @@
 package netflow.io.udpreceive;
 
 import java.net.DatagramPacket;
-import java.nio.ByteBuffer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -11,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class PacketManager
 {
 	final private int bufferSize;
-	ConcurrentLinkedQueue<DatagramPacket> queue;
+	private ConcurrentLinkedQueue<DatagramPacket> queue;
 	
 	/**
 	 * Construct a new PacketManager

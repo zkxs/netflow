@@ -3,10 +3,7 @@ package netflow.io.udpreceive;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.SocketAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import netflow.NetflowCollector;
@@ -30,6 +27,12 @@ public class DatagramReceiver implements Stoppable
 	private boolean running;
 	private ReceiverThread thread;
 	
+	/**
+	 * Construct a new DatagramReceiver
+	 * @param collector The NetflowCollector this DatagramReceiver is a member of
+	 * @param portNumber The port to listen on
+	 * @throws SocketException if the socket could not be opened (mainly if the port is already bound)
+	 */
 	public DatagramReceiver(NetflowCollector collector, final int portNumber) throws SocketException
 	{
 		this.collector = collector;
@@ -60,6 +63,10 @@ public class DatagramReceiver implements Stoppable
 		}
 	}
 	
+	/**
+	 * Thread that "listens" for incoming datagrams
+	 * @author Michael Ripley (<a href="mailto:michael-ripley@utulsa.edu">michael-ripley@utulsa.edu</a>) Jun 9, 2015
+	 */
 	private class ReceiverThread extends Thread
 	{
 		public ReceiverThread(String name)
@@ -100,6 +107,7 @@ public class DatagramReceiver implements Stoppable
 			
 			synchronized(thread)
 			{
+				// notify threads that are waiting for this thread to stop
 				thread.notifyAll();
 			}
 		}

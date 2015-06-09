@@ -3,7 +3,8 @@ package netflow;
 public interface Stoppable
 {	
 	/**
-	 * Block until this object has stopped
+	 * Stop this object from running as quickly and gracefully as possible. This method will block until this
+	 * object is no longer running.
 	 */
 	public void stop();
 }
