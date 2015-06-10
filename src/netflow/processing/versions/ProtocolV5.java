@@ -14,7 +14,15 @@ public final class ProtocolV5 implements ProtocolInterface
 	@Override
 	public final NetflowEntry process(DatagramPacket packet)
 	{
-		// TODO Auto-generated method stub
+		// TODO Bailey, make this all work
+		
+		System.out.printf("Got a v5 packet from %s [%d]\n    %s\n",
+				packet.getAddress().toString(),
+				packet.getLength(),
+				netflow.Util.bytesToHex(packet.getData(), packet.getLength())); // the data as a string
+		
+		
+		
 		return null;
 	}	
 	
