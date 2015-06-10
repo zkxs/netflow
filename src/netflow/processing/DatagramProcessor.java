@@ -59,7 +59,7 @@ public class DatagramProcessor
 		else
 		{
 			//TODO: packet too short
-			System.err.println("packet too short");
+			System.err.printf("packet too short: %d bytes\n", packet.getLength());
 		}
 		
 	}	
