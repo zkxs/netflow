@@ -1,5 +1,7 @@
 package netflow;
 
+import java.net.InetAddress;
+
 /**
  * Stores the data for a single netflow entry. Some datagrams may contain multiple entries,
  * so a linked list structure using {@link #nextEntry} is created.
@@ -13,4 +15,9 @@ public class NetflowEntry
 	private int version;
 	private int count;
 	private long sys_uptime;
+	
+	private InetAddress sourceAddress;
+	private InetAddress destinationAddress;
+	
+	//TODO: Bailey, add more fields here, and maybe a constructor
 }
