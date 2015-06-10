@@ -53,7 +53,7 @@ public class DatagramProcessor
 			else
 			{
 				//TODO: invalid protocol version
-				System.err.println("invalid protocol version");
+				System.err.printf("invalid protocol version: %d\n", version);
 			}
 		}
 		else
