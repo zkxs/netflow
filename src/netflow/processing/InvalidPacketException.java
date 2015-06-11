@@ -8,7 +8,7 @@ public class InvalidPacketException extends Exception
 {
 	public InvalidPacketException()
 	{
-		super();
+		super("Invalid Packet");
 	}
 
 	public InvalidPacketException(String message)
