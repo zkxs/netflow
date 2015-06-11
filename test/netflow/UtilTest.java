@@ -1,8 +1,7 @@
 package netflow;
 
 import static org.junit.Assert.*;
-import static netflow.Util.bytesToUnsignedShort;
-import static netflow.Util.bytesToUnsignedInt;
+import static netflow.Util.*;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,6 +27,21 @@ public class UtilTest
 	@After
 	public void tearDown() throws Exception
 	{}
+	
+	@Test
+	public void testBytesToUnsignedByte()
+	{
+		byte[] test = {
+				(byte) 0x00 ,
+				(byte) 0x40 ,
+				(byte) 0x80 ,
+				(byte) 0xFF };
+		
+		assertEquals(bytesToUnsignedByte(test,  0), (short) 0);
+		assertEquals(bytesToUnsignedByte(test,  1), (short) (4 * 16));
+		assertEquals(bytesToUnsignedByte(test,  2), (short) (8 * 16));
+		assertEquals(bytesToUnsignedByte(test,  3), (short) 255);
+	}
 	
 	@Test
 	public void testBytesToUnsignedShort()

@@ -44,6 +44,17 @@ public final class Util
 	}
 	
 	/**
+	 * Read an unsigned byte from a byte array
+	 * @param buf The byte array
+	 * @param offset The offset in the array to start from
+	 * @return The unsigned byte value, stored in an short.
+	 */
+	final public static short bytesToUnsignedByte(byte[] buf, int offset)
+	{
+		return (short)(buf[offset] & 0xFF);
+	}
+	
+	/**
 	 * Read an unsigned short from a byte array
 	 * @param buf The byte array
 	 * @param offset The offset in the array to start from
