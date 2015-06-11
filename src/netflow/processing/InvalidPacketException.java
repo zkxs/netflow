@@ -13,7 +13,7 @@ public class InvalidPacketException extends Exception
 	 */
 	public InvalidPacketException()
 	{
-		super("Invalid Packet");
+		super();
 	}
 
 	/**
