@@ -29,7 +29,7 @@ public final class ProtocolV5 implements ProtocolInterface
 		
 		if(packet.getLength() != HEADER_LENGTH + FLOW_LENGTH * count)
 		{
-			throw new InvalidPacketException();
+			throw new InvalidPacketException("Length of packet is incorrect");
 		}
 
 		System.out.printf("Got a v5 packet from %s [bytes=%d, count=%d]\n    %s\n",
