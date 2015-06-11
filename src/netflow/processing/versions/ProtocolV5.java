@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 
 import netflow.NetflowEntry;
 import netflow.Util;
+import netflow.processing.InvalidPacketException;
 
 /**
  * V5 of the netflow protocol
@@ -18,7 +19,7 @@ public final class ProtocolV5 implements ProtocolInterface
 	
 
 	@Override
-	public final NetflowEntry process(DatagramPacket packet)
+	public final NetflowEntry process(DatagramPacket packet) throws InvalidPacketException
 	{
 		// TODO Bailey, make this all work
 		
@@ -26,6 +27,11 @@ public final class ProtocolV5 implements ProtocolInterface
 		
 		int count = Util.bytesToUnsignedShort(data, 2);
 		
+		if(packet.getLength() != HEADER_LENGTH + FLOW_LENGTH * count)
+		{
+			throw new InvalidPacketException();
+		}
+
 		System.out.printf("Got a v5 packet from %s [bytes=%d, count=%d]\n    %s\n",
 				packet.getAddress().toString(), // person who sent us the packet
 				packet.getLength(), // length of packet
@@ -36,7 +42,6 @@ public final class ProtocolV5 implements ProtocolInterface
 		byte[] addrBytes = new byte[4];
 		
 		int offset = -1;
-		
 		// for each packet
 		for (int i = 0; i < count; i++)
 		{
@@ -65,6 +70,8 @@ public final class ProtocolV5 implements ProtocolInterface
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			short protocolType = Util.bytesToUnsignedByte(data, offset + 38);
 			
 			System.out.printf("%s --> %s\n", sourceAddr.toString(), destAddr.toString());
 		}

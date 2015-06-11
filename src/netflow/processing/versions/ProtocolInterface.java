@@ -3,6 +3,7 @@ package netflow.processing.versions;
 import java.net.DatagramPacket;
 
 import netflow.NetflowEntry;
+import netflow.processing.InvalidPacketException;
 
 /**
  * An interface that the different implementations of the netflow protocol will implement
@@ -15,6 +16,7 @@ public interface ProtocolInterface
 	 * Process a single datagram
 	 * @param packet the datagram to process
 	 * @return an object representing a netflow entry
+	 * @throws InvalidPacketException 
 	 */
-	public NetflowEntry process(DatagramPacket packet);
+	public NetflowEntry process(DatagramPacket packet) throws InvalidPacketException;
 }
