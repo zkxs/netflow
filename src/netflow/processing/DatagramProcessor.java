@@ -38,7 +38,14 @@ public class DatagramProcessor
 			
 			if (version < MAX_PROTOCOL_VERSION && protocols[version] != null)
 			{
-				NetflowEntry entry = protocols[version].process(packet);
+				try
+				{
+					NetflowEntry entry = protocols[version].process(packet);
+				}
+				catch (InvalidPacketException e)
+				{
+					e.printStackTrace();
+				}
 				
 				/* TODO: stick the entry (entries???) in the output queue
 				 * A packet can contain multiple entries. I think I'll store these as a linked list by adding
