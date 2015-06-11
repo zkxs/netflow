@@ -14,7 +14,6 @@ public class NetflowEntry
 	
 	private int version;
 	//private int count;
-	private long sys_uptime;
 	
 	private InetAddress sourceAddress;
 	private InetAddress destinationAddress;
@@ -38,14 +37,6 @@ public class NetflowEntry
 		return version;
 	}
 
-	/** Gets the System Uptime
-	 * 
-	 * @return sys_uptime
-	 */
-	public long getSys_uptime() 
-	{
-		return sys_uptime;
-	}
 	
 	/** Gets the Source Address of the Netflow
 	 * 
@@ -73,13 +64,13 @@ public class NetflowEntry
 	 * @param dest the destination of the Netflow
 	 * @param nxt the next Netflow entry
 	 */
-	public NetflowEntry(int vers, long uptime, InetAddress src, InetAddress dest, NetflowEntry nxt)
+	public NetflowEntry(int vers, InetAddress src, InetAddress dest, NetflowEntry nxt)
 	{
 		version = vers;
-		sys_uptime = uptime;
 		sourceAddress = src;
 		destinationAddress = dest;
 		nextEntry = nxt;
 	}
 	//TODO: Bailey, add more fields here, and maybe a constructor
+	//TODO: MIchael, Time stuff
 }
