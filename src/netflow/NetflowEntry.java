@@ -13,31 +13,73 @@ public class NetflowEntry
 	private NetflowEntry nextEntry;
 	
 	private int version;
-	private int count;
+	//private int count;
 	private long sys_uptime;
 	
 	private InetAddress sourceAddress;
 	private InetAddress destinationAddress;
 	
-	
-	public NetflowEntry getNextEntry() {
+	/** Gets the next Netflow
+	 * 
+	 * @return nextEntry the next Netflow from the packet
+	 */
+	public NetflowEntry getNextEntry() 
+	{
 		return nextEntry;
 	}
-	public int getVersion() {
+	
+	/** Gets the version of the packet
+	 * 
+	 * @return version the version of the packet
+	 */
+	
+	public int getVersion() 
+	{
 		return version;
 	}
-	public int getCount() {
-		return count;
-	}
-	public long getSys_uptime() {
+
+	/** Gets the System Uptime
+	 * 
+	 * @return sys_uptime
+	 */
+	public long getSys_uptime() 
+	{
 		return sys_uptime;
 	}
-	public InetAddress getSourceAddress() {
+	
+	/** Gets the Source Address of the Netflow
+	 * 
+	 * @return sourceAddress the source of the Netflow
+	 */
+	public InetAddress getSourceAddress() 
+	{
 		return sourceAddress;
 	}
-	public InetAddress getDestinationAddress() {
+	
+	/** Gets the Destination Address of the Netflow
+	 * 
+	 * @return destinationAddress the destination of the Netflow
+	 */
+	public InetAddress getDestinationAddress() 
+	{
 		return destinationAddress;
 	}
 	
+	/** Constructor for a Netflow
+	 * 
+	 * @param vers version of the packet
+	 * @param uptime the sytem uptime
+	 * @param src the source of the Netflow
+	 * @param dest the destination of the Netflow
+	 * @param nxt the next Netflow entry
+	 */
+	public NetflowEntry(int vers, long uptime, InetAddress src, InetAddress dest, NetflowEntry nxt)
+	{
+		version = vers;
+		sys_uptime = uptime;
+		sourceAddress = src;
+		destinationAddress = dest;
+		nextEntry = nxt;
+	}
 	//TODO: Bailey, add more fields here, and maybe a constructor
 }
