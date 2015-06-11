@@ -19,5 +19,25 @@ public class NetflowEntry
 	private InetAddress sourceAddress;
 	private InetAddress destinationAddress;
 	
+	
+	public NetflowEntry getNextEntry() {
+		return nextEntry;
+	}
+	public int getVersion() {
+		return version;
+	}
+	public int getCount() {
+		return count;
+	}
+	public long getSys_uptime() {
+		return sys_uptime;
+	}
+	public InetAddress getSourceAddress() {
+		return sourceAddress;
+	}
+	public InetAddress getDestinationAddress() {
+		return destinationAddress;
+	}
+	
 	//TODO: Bailey, add more fields here, and maybe a constructor
 }
