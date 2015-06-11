@@ -6,11 +6,20 @@ package netflow.processing;
  */
 public class InvalidPacketException extends Exception
 {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Constructs a new InvalidPacketException with no message.
+	 */
 	public InvalidPacketException()
 	{
 		super();
 	}
 
+	/**
+	 * Constructs a new InvalidPacketException with the specified detail message
+	 * @param message the detail message
+	 */
 	public InvalidPacketException(String message)
 	{
 		super(message);
