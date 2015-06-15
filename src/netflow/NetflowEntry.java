@@ -17,7 +17,8 @@ public class NetflowEntry
 	
 	private InetAddress sourceAddress;
 	private InetAddress destinationAddress;
-	
+	private short protocolType;
+
 	/** Gets the next Netflow
 	 * 
 	 * @return nextEntry the next Netflow from the packet
@@ -56,6 +57,14 @@ public class NetflowEntry
 		return destinationAddress;
 	}
 	
+	/** Gets the Protocol Type of the netflow
+	 * 
+	 * @return protocolType
+	 */
+	public short getProtocolType() {
+		return protocolType;
+	}
+	
 	/** Constructor for a Netflow
 	 * 
 	 * @param vers version of the packet
@@ -64,13 +73,14 @@ public class NetflowEntry
 	 * @param dest the destination of the Netflow
 	 * @param nxt the next Netflow entry
 	 */
-	public NetflowEntry(int vers, InetAddress src, InetAddress dest, NetflowEntry nxt)
+	public NetflowEntry(int vers, InetAddress src, InetAddress dest, NetflowEntry nxt, short protType)
 	{
 		version = vers;
 		sourceAddress = src;
 		destinationAddress = dest;
 		nextEntry = nxt;
+		protocolType = protType;
 	}
 	//TODO: Bailey, add more fields here, and maybe a constructor
-	//TODO: MIchael, Time stuff
+	//TODO: Michael, Time stuff
 }
