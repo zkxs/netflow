@@ -26,7 +26,9 @@ public final class ProtocolV5 implements ProtocolInterface
 		byte[] data = packet.getData();
 		
 		int count = Util.bytesToUnsignedShort(data, 2);
-		
+		NetflowEntry head = null;
+		NetflowEntry prevflow = null;
+		NetflowEntry netflw = null;
 		if(packet.getLength() != HEADER_LENGTH + FLOW_LENGTH * count)
 		{
 			throw new InvalidPacketException("Length of packet is incorrect");
@@ -72,12 +74,26 @@ public final class ProtocolV5 implements ProtocolInterface
 			}
 			
 			short protocolType = Util.bytesToUnsignedByte(data, offset + 38);
+			int sourcePort = Util.bytesToUnsignedShort(data, offset + 32);
+			int destinationPort = Util.bytesToUnsignedShort(data, offset + 34);
 			
 			System.out.printf("%s --> %s\n", sourceAddr.toString(), destAddr.toString());
+			
+			if(i != 0)
+			{
+				prevflow = netflw;
+				netflw = new NetflowEntry(5, sourceAddr, destAddr, protocolType, sourcePort, destinationPort);
+				prevflow.setNextEntry(netflw);
+			}
+			else
+			{
+				netflw = new NetflowEntry(5, sourceAddr, destAddr, protocolType, sourcePort, destinationPort);
+				head = netflw;
+			}
 		}
 		
 		
-		return null; //TODO: actually return a NetflowEntry
+		return head; //TODO: actually return a NetflowEntry
 	}	
 	
 }
