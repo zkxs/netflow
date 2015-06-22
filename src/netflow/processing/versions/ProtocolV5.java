@@ -21,7 +21,6 @@ public final class ProtocolV5 implements ProtocolInterface
 	@Override
 	public final NetflowEntry process(DatagramPacket packet) throws InvalidPacketException
 	{
-		// TODO Bailey, make this all work
 		
 		byte[] data = packet.getData();
 		
@@ -49,51 +48,51 @@ public final class ProtocolV5 implements ProtocolInterface
 		{
 			// offset of the first byte in this flow. Flows are 48 bytes long.
 			offset = i * FLOW_LENGTH + HEADER_LENGTH;
-			System.arraycopy(data, offset + 0, addrBytes, 0, 4);
+			
+			// get the source address
 			InetAddress sourceAddr = null;
+			System.arraycopy(data, offset + 0, addrBytes, 0, 4);
 			try
 			{
 				sourceAddr = InetAddress.getByAddress(addrBytes);
 			}
 			catch (UnknownHostException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new InvalidPacketException("souce address is invalid");
 			}
 			
-			System.arraycopy(data, offset + 4, addrBytes, 0, 4);
+			// get the destination address
 			InetAddress destAddr = null;
+			System.arraycopy(data, offset + 4, addrBytes, 0, 4);
 			try
 			{
 				destAddr = InetAddress.getByAddress(addrBytes);
 			}
 			catch (UnknownHostException e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new InvalidPacketException("destination address is invalid");
 			}
 			
 			short protocolType = Util.bytesToUnsignedByte(data, offset + 38);
 			int sourcePort = Util.bytesToUnsignedShort(data, offset + 32);
 			int destinationPort = Util.bytesToUnsignedShort(data, offset + 34);
 			
-			System.out.printf("%s --> %s\n", sourceAddr.toString(), destAddr.toString());
+			System.out.printf(    "%s --> %s\n", sourceAddr.toString(), destAddr.toString());
 			
-			if(i != 0)
+			prevflow = netflw;
+			netflw = new NetflowEntry(5, sourceAddr, destAddr, protocolType, sourcePort, destinationPort);
+			
+			if (prevflow != null) // if not the first entry
 			{
-				prevflow = netflw;
-				netflw = new NetflowEntry(5, sourceAddr, destAddr, protocolType, sourcePort, destinationPort);
 				prevflow.setNextEntry(netflw);
 			}
-			else
+			else // first entry
 			{
-				netflw = new NetflowEntry(5, sourceAddr, destAddr, protocolType, sourcePort, destinationPort);
 				head = netflw;
 			}
 		}
 		
-		
-		return head; //TODO: actually return a NetflowEntry
+		return head;
 	}	
 	
 }
