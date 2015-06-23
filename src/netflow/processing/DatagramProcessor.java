@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import netflow.NetflowCollector;
 import netflow.NetflowEntry;
+import netflow.Stoppable;
 import netflow.Util;
 import netflow.processing.versions.*;
 
@@ -12,7 +13,7 @@ import netflow.processing.versions.*;
  * Process the raw data of a netflow datagram into a Java data structure
  * @author Michael Ripley (<a href="mailto:michael-ripley@utulsa.edu">michael-ripley@utulsa.edu</a>) Jun 8, 2015
  */
-public class DatagramProcessor
+public class DatagramProcessor implements Stoppable
 {	
 	private final static int MIN_PACKET_LENGTH = 17; // header in protocol v1 (nothing is smaller)
 	private final static int MAX_PROTOCOL_VERSION = 9;
@@ -30,7 +31,7 @@ public class DatagramProcessor
 	 * Process a single datagram packet. The results of the processing will be sent to an output queue.
 	 * @param packet The packet to process
 	 */
-	public void process(DatagramPacket packet)
+	private void process(DatagramPacket packet) throws InvalidPacketException
 	{
 		if (packet.getLength() >= MIN_PACKET_LENGTH)
 		{
@@ -38,33 +39,35 @@ public class DatagramProcessor
 			
 			if (version < MAX_PROTOCOL_VERSION && protocols[version] != null)
 			{
-				try
-				{
-					NetflowEntry entry = protocols[version].process(packet);
-				}
-				catch (InvalidPacketException e)
-				{
-					e.printStackTrace();
-				}
-				
-				/* TODO: stick the entry (entries???) in the output queue
-				 * A packet can contain multiple entries. I think I'll store these as a linked list by adding
-				 * a NetflowEntry field within NetflowEntry.
-				 */
+				// process the packet
+				NetflowEntry entry = protocols[version].process(packet);
 				
 				// free the DatagramPacket for reuse
 				collector.getPacketManager().free(packet);
+				
+				/* Stick all the entries in the output queue.
+				 * A packet can contain multiple entries. These are stored as a linked list.
+				 */
+				while (entry != null)
+				{
+					// add a single entry
+					outputQueue.add(entry);
+					
+					// get the next entry in the chain, if it exists
+					entry = entry.getNextEntry();
+					
+					// signal that a new entry has been enqueued
+					collector.signalNewEntry();
+				}
 			}
 			else
 			{
-				//TODO: invalid protocol version
-				System.err.printf("invalid protocol version: %d\n", version);
+				throw new InvalidPacketException(String.format("invalid protocol version: %d", version));
 			}
 		}
 		else
 		{
-			//TODO: packet too short
-			System.err.printf("packet too short: %d bytes\n", packet.getLength());
+			throw new InvalidPacketException(String.format("packet too short: only %d bytes", packet.getLength()));
 		}
 		
 	}	
@@ -131,7 +134,15 @@ public class DatagramProcessor
 				DatagramPacket packet;
 				if ((packet = inputQueue.poll()) != null)
 				{
-					process(packet);
+					try
+					{
+						process(packet);
+					}
+					catch (InvalidPacketException e)
+					{
+						// TODO Log invalid packets
+						e.printStackTrace();
+					}
 				}
 				else // the queue is empty
 				{

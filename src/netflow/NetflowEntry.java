@@ -18,8 +18,8 @@ public class NetflowEntry
 	private InetAddress sourceAddress;
 	private InetAddress destinationAddress;
 	private short protocolType;
-	int sourcePort;
-	int destinationPort;
+	private int sourcePort;
+	private int destinationPort;
 	
 	/** Gets the next Netflow
 	 * 
@@ -108,6 +108,6 @@ public class NetflowEntry
 		sourcePort = srcport;
 		destinationPort = destport;
 	}
-	//TODO: Bailey, add more fields here, and maybe a constructor
+	
 	//TODO: Michael, Time stuff
 }

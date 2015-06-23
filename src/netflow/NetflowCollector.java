@@ -28,7 +28,7 @@ public class NetflowCollector
 	private ConcurrentLinkedQueue<NetflowEntry> toStoreQueue;
 	private LinkedList<DatagramReceiver> servers;
 	private LinkedList<DatagramProcessor> processors;
-	private Object serverLock = new Object();
+	private Object outputLock = new Object();
 	private Object processorLock = new Object();
 	
 	// begin constructors
@@ -100,6 +100,17 @@ public class NetflowCollector
 	}
 	
 	/**
+	 * Signal that a new entry is ready to be written to the database
+	 */
+	public void signalNewEntry()
+	{
+		synchronized (outputLock)
+		{
+			outputLock.notify();
+		}
+	}
+	
+	/**
 	 * Get this collector's Packet Manager
 	 * @return this collector's Packet Manager
 	 */
@@ -127,14 +138,12 @@ public class NetflowCollector
 	}
 
 	/**
-	 * Get a lock for use by the server threads.
-	 * Currently unused.
-	 * @return a lock for use by the server threads
+	 * Get a lock for use by the output threads.
+	 * @return a lock for use by the output threads
 	 */
-	@Deprecated
-	public Object getServerLock()
+	public Object getOutputLock()
 	{
-		return serverLock;
+		return outputLock;
 	}
 
 	/**

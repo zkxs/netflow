@@ -1,8 +1,17 @@
 package netflow.io;
 
-import netflow.NetflowEntry;
+import netflow.NetflowCollector;
 
-public interface Exporter
+/**
+ * This is a flag that 
+ * @author Michael Ripley (<a href="mailto:michael-ripley@utulsa.edu">michael-ripley@utulsa.edu</a>) Jun 23, 2015
+ */
+public abstract class Exporter
 {	
-	public void Export(NetflowEntry netflow);
+	/**
+	 * Get an instance of this type of exporter
+	 * @param collector
+	 * @return
+	 */
+	public static Exporter getInstance(NetflowCollector collector);
 }
