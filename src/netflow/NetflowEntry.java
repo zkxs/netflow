@@ -34,10 +34,9 @@ public class NetflowEntry
 	}
 	
 	/** 
-	 * Gets the version of the packet
+	 * Gets the version of the packet as an unsigned short.
 	 * @return version the version of the packet
 	 */
-	
 	public int getVersion() 
 	{
 		return version;
@@ -63,15 +62,15 @@ public class NetflowEntry
 	}
 	
 	/**
-	 * Gets the Protocol Type of the netflow
-	 * @return protocolType
+	 * Gets the IP Protocol Type of the netflow as an unsigned byte
+	 * @return protocolType the IP Protocol Type
 	 */
 	public short getProtocolType() {
 		return protocolType;
 	}
 	
 	/**
-	 * gets the source port of the netflow
+	 * gets the source port of the netflow as an unsigned short
 	 * @return sourcePort the source of the netflow
 	 */
 	public int getSourcePort() {
@@ -79,7 +78,7 @@ public class NetflowEntry
 	}
 
 	/**
-	 * gets the destination port of the netflow
+	 * gets the destination port of the netflow as an unsigned short
 	 * @return destinationPort the destination of the netflow
 	 */
 	public int getDestinationPort() {
@@ -87,8 +86,8 @@ public class NetflowEntry
 	}
 
 	/**
-	 * Set the next netflow 
-	 * @param nextEntry
+	 * Set the next netflow entry. This method should only be called from within the packed processing code.
+	 * @param nextEntry The next entry in this packet
 	 */
 	public void setNextEntry(NetflowEntry nextEntry) {
 		this.nextEntry = nextEntry;
