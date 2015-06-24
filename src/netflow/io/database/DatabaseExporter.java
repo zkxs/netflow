@@ -7,9 +7,8 @@ import netflow.NetflowCollector;
 import netflow.NetflowEntry;
 import netflow.Stoppable;
 import netflow.Util;
-import netflow.io.Exporter;
 
-public class DatabaseExporter implements Exporter, Stoppable
+public class DatabaseExporter implements Stoppable
 {
 	private static int id = 0;
 	private NetflowCollector collector;
@@ -26,13 +25,10 @@ public class DatabaseExporter implements Exporter, Stoppable
 		
 		running = true;
 		
+		// TODO: SET UP DATABASE CONNECTION
+		
 		thread = new ExporterThread("ExporterThread(" + id++ + ")");
 		thread.start();
-	}
-	
-	public Exporter getInstance(NetflowCollector collector)
-	{
-		return new DatabaseExporter(collector);
 	}
 	
 	private void export(NetflowEntry netflow)
