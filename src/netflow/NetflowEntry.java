@@ -21,8 +21,11 @@ public class NetflowEntry
 	private int sourcePort;
 	private int destinationPort;
 	
-	/** Gets the next Netflow
-	 * 
+	/** 
+	 * Some packets contain multiple netflow entries.  These are stored as a linked list by the
+	 * processing code.  The returned entry is the head of a linked list containing all the entries from a packet.
+	 * If any entry contains invalid data, the entire packet is dropped during processing.  This method gets the
+	 * next entry in the chain.
 	 * @return nextEntry the next Netflow from the packet
 	 */
 	public NetflowEntry getNextEntry() 
@@ -30,8 +33,8 @@ public class NetflowEntry
 		return nextEntry;
 	}
 	
-	/** Gets the version of the packet
-	 * 
+	/** 
+	 * Gets the version of the packet
 	 * @return version the version of the packet
 	 */
 	
@@ -41,8 +44,8 @@ public class NetflowEntry
 	}
 
 	
-	/** Gets the Source Address of the Netflow
-	 * 
+	/**
+	 * Gets the Source Address of the Netflow
 	 * @return sourceAddress the source of the Netflow
 	 */
 	public InetAddress getSourceAddress() 
@@ -50,8 +53,8 @@ public class NetflowEntry
 		return sourceAddress;
 	}
 	
-	/** Gets the Destination Address of the Netflow
-	 * 
+	/**
+	 * Gets the Destination Address of the Netflow
 	 * @return destinationAddress the destination of the Netflow
 	 */
 	public InetAddress getDestinationAddress() 
@@ -59,40 +62,40 @@ public class NetflowEntry
 		return destinationAddress;
 	}
 	
-	/** Gets the Protocol Type of the netflow
-	 * 
+	/**
+	 * Gets the Protocol Type of the netflow
 	 * @return protocolType
 	 */
 	public short getProtocolType() {
 		return protocolType;
 	}
 	
-	/** gets the source port of the netflow
-	 * 
+	/**
+	 * gets the source port of the netflow
 	 * @return sourcePort the source of the netflow
 	 */
 	public int getSourcePort() {
 		return sourcePort;
 	}
 
-	/**gets the destination port of the netflow
-	 * 
+	/**
+	 * gets the destination port of the netflow
 	 * @return destinationPort the destination of the netflow
 	 */
 	public int getDestinationPort() {
 		return destinationPort;
 	}
 
-	/** Set the next netflow 
-	 * 
+	/**
+	 * Set the next netflow 
 	 * @param nextEntry
 	 */
 	public void setNextEntry(NetflowEntry nextEntry) {
 		this.nextEntry = nextEntry;
 	}
 
-	/** Constructor for a Netflow
-	 * 
+	/**
+	 * Constructor for a Netflow
 	 * @param vers version of the packet
 	 * @param uptime the sytem uptime
 	 * @param src the source of the Netflow
