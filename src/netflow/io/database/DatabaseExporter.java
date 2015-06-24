@@ -7,11 +7,11 @@ import netflow.NetflowCollector;
 import netflow.NetflowEntry;
 import netflow.Stoppable;
 import netflow.Util;
+import netflow.io.Exporter;
 
-public class DatabaseExporter implements Stoppable
+public class DatabaseExporter extends Exporter implements Stoppable
 {
 	private static int id = 0;
-	private NetflowCollector collector;
 	private boolean running;
 	private ExporterThread thread;
 	private ConcurrentLinkedQueue<NetflowEntry> inputQueue;
@@ -19,9 +19,10 @@ public class DatabaseExporter implements Stoppable
 	
 	public DatabaseExporter(NetflowCollector collector)
 	{
-		this.collector = collector;
-		inputQueue = collector.getToStoreQueue();
-		lock = collector.getProcessorLock();
+		super(collector);
+		
+		inputQueue = getNetflowCollector().getToStoreQueue();
+		lock = getNetflowCollector().getProcessorLock();
 		
 		running = true;
 		
@@ -33,7 +34,7 @@ public class DatabaseExporter implements Stoppable
 	
 	private void export(NetflowEntry netflow)
 	{
-		
+		//TODO: write to database
 	}
 	
 	public void stop()
@@ -42,13 +43,16 @@ public class DatabaseExporter implements Stoppable
 		
 		synchronized(thread)
 		{
-			try
+			if (thread.isAlive())
 			{
-				thread.wait();
-			}
-			catch (InterruptedException e)
-			{
-				Util.die(e);
+				try
+				{
+					thread.wait();
+				}
+				catch (InterruptedException e)
+				{
+					Util.die(e);
+				}
 			}
 		}
 	}

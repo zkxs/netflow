@@ -50,15 +50,19 @@ public class DatagramReceiver implements Stoppable
 	{
 		running = false;
 		socket.close();
+		
 		synchronized(thread)
 		{
-			try
+			if (thread.isAlive())
 			{
-				thread.wait();
-			}
-			catch (InterruptedException e)
-			{
-				Util.die(e);
+				try
+				{
+					thread.wait();
+				}
+				catch (InterruptedException e)
+				{
+					Util.die(e);
+				}
 			}
 		}
 	}

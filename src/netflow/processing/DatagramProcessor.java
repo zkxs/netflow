@@ -103,13 +103,16 @@ public class DatagramProcessor implements Stoppable
 		
 		synchronized(thread)
 		{
-			try
+			if (thread.isAlive())
 			{
-				thread.wait();
-			}
-			catch (InterruptedException e)
-			{
-				Util.die(e);
+				try
+				{
+					thread.wait();
+				}
+				catch (InterruptedException e)
+				{
+					Util.die(e);
+				}
 			}
 		}
 	}
